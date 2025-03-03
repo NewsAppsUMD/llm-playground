@@ -85,3 +85,8 @@ PUT YOUR EVALUATION HERE.
 Thinking about the news app project you've chosen, write a few examples of how you might use LLMs to help (beyond writing code, which I expect everyone to do). Be specific: don't say that you'll use it to make the app. Instead, say how it could improve parts of the process of obtaining, cleaning or restructuring your data. I encourage you to think big.
 
 PUT YOUR ANSWERS HERE.
+
+
+### Finishing Up
+
+When you are finished, add, commit and push your work to GitHub and submit the URL of the repository in ELMS.
