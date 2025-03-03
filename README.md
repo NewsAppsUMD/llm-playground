@@ -49,11 +49,13 @@ cat sanctionsfy25.txt | llm -m groq-llama-3.3-70b "produce only an array of JSON
 
 That "no yapping" thing? That's one of the ways you get LLMs to stop narrating their output and just give you what you specify.
 
-Now it's your turn: find a short (3 pages or less) text file that contains unstructured text and drop it into the list of files on the left side. Then create a prompt like the one above that turns it into structured data.
+Now it's your turn: find a short (3 pages or less) text file that contains unstructured text and drop it into the list of files on the left side. Then create a prompt like the one above that turns it into structured data. Put your prompt in the space below, and below that tell me how the LLM did.
 
 ```bash
 
 ```
+
+PUT YOUR EVALUATION HERE.
 
 ### Vision Models
 
