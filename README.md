@@ -65,9 +65,23 @@ $ llm -m groq/llama-3.2-90b-vision-preview --attachment md_doc.png "what is the 
 
 You should get something like: "The license number in the image is D25922." as a response.
 
-Now it's your turn: find an image _that you would be ok showing to your grandmother_ and make sure it's a PNG, GIF or JPG file. Drag it into the codespace so you can see it in your list of files, then change the command below so that it refers to your image and asks a different question. Edit the README to do that so I can see your work.
+Now it's your turn: find an image _that you would be ok showing to your grandmother_ and make sure it's a PNG, GIF or JPG file. Drag it into the codespace so you can see it in your list of files, then change the command below so that it refers to your image and asks a different question. Edit the README to do that so I can see your work. How did the LLM do?
 
 ```bash
 $ llm -m groq/llama-3.2-90b-vision-preview --attachment YOUR_FILE "YOUR QUESTION"
 ```
 
+PUT YOUR EVALUATION HERE.
+
+
+### Audio Models
+
+Another option is to use models that transcribe audio. Download and listen to [this mp3 file](https://dare.wisc.edu/audio/new-mexico-chuck-wagon-etiquette/) from the Dictionary of American Regional English project at the University of Wisconsin. Then, in Groq's dev console, change the model to `distil-whisper-large-v3-en` and upload the mp3 file using the "Select File" button. Then hit submit and check out the transcript. How did the LLM do compared to the original transcript?
+
+PUT YOUR EVALUATION HERE.
+
+### How You Could Use AI
+
+Thinking about the news app project you've chosen, write a few examples of how you might use LLMs to help (beyond writing code, which I expect everyone to do). Be specific: don't say that you'll use it to make the app. Instead, say how it could improve parts of the process of obtaining, cleaning or restructuring your data. I encourage you to think big.
+
+PUT YOUR ANSWERS HERE.
