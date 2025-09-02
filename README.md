@@ -1,6 +1,6 @@
 # llm-playground
 
-Open this repository in a codespace, then run the following commands in the terminal:
+Using the green "Use this template" button on the top right, create a copy of this repository under your GitHub account, giving it the same name. Open that repository in a codespace, then run the following commands in the terminal:
 
 ### Setup
 
