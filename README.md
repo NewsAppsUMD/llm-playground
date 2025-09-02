@@ -69,7 +69,7 @@ cat sanctionsfy25.txt | llm -m groq-llama-3.3-70b "produce only an array of JSON
 
 That "no yapping" thing? That's one of the ways you get LLMs to stop narrating their output and just give you what you specify.
 
-Now it's your turn: find a short (3 pages or less) news story that contains unstructured text and drop it into the list of files on the left side. Then create a prompt like the one above that turns some elements of it into structured data. Put your prompt in the space below, and below that tell me how the LLM did.
+Now it's your turn: find a short (3 pages or less) news story that contains unstructured text, save it as a text file and drop it into the list of files on the left side. Then create a prompt like the one above that turns some elements of it into structured data. Put your prompt in the space below, and below that tell me how the LLM did.
 
 ```bash
 
@@ -98,16 +98,21 @@ PUT YOUR EVALUATION HERE.
 
 ### Audio Models
 
-Another option is to use models that transcribe audio. Download and listen to [this mp3 file](https://dare.wisc.edu/audio/new-mexico-chuck-wagon-etiquette/) from the Dictionary of American Regional English project at the University of Wisconsin. Then, in Groq's dev console, change the model to `distil-whisper-large-v3-en` and upload the mp3 file using the "Select File" button. Then hit submit and check out the transcript. How did the LLM do compared to the original transcript?
+Another option is to use models that transcribe audio. Listen to [this mp3 file](https://dare.wisc.edu/audio/south-carolina-desegregating-edisto-state-park/) from the Dictionary of American Regional English project at the University of Wisconsin. Click the download link and save the .mp3 file to your computer, then drag it to the file to the list of files on the left. Then, using llm, have the `whisper-large-v3-turbo` model from Groq provide a transcription using that file name.
+
+```bash
+llm -m whisper-large-v3-turbo -a YOUR_FILE 
+```
+
+How did the LLM do compared to the original transcript?
 
 PUT YOUR EVALUATION HERE.
 
 ### How You Could Use AI
 
-Thinking about the news app project you've chosen, write a few examples of how you might use LLMs to help (beyond writing code, which I expect everyone to do). Be specific: don't say that you'll use it to make the app. Instead, say how it could improve parts of the process of obtaining, cleaning or restructuring your data. I encourage you to think big.
+Thinking about news archives, write a few examples of how you might use LLMs to help (beyond writing code). Be specific: don't say that you'll use it to accomplish a larger goal. Instead, say how it could perform or improve specific tasks. I encourage you to think big.
 
 PUT YOUR ANSWERS HERE.
-
 
 ### Finishing Up
 
