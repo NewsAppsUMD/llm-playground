@@ -1,0 +1,225 @@
+---
+title: "LLMs for Journalism with R"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(eval = FALSE)
+```
+
+## Text Models
+
+The `ellmer` package lets us have conversations with LLMs, ask them to summarize text, and extract structured data. Let's start by summarizing a news story:
+
+```{r summarize-article}
+library(ellmer)
+library(rvest)
+
+url <- "https://cnsmaryland.org/2025/08/02/in-the-deep-woods-a-little-owl-teaches-big-lessons/"
+page <- read_html(url)
+story_text <- page |> html_elements("article p") |> html_text2() |> paste(collapse = "\n")
+
+chat <- chat_groq(model = "meta-llama/llama-4-scout-17b-16e-instruct")
+chat$chat(paste("Summarize this story in 3 paragraphs:\n\n", story_text))
+```
+
+Read the story: <https://cnsmaryland.org/2025/08/02/in-the-deep-woods-a-little-owl-teaches-big-lessons/> and then compare that to the summary. Is the summary a good description? Why or why not?
+
+**PUT YOUR ANSWER HERE.**
+
+Now it's your turn: find a story that you wrote or are very familiar with that's published online, and try the same process, changing the URL and evaluating the result.
+
+```{r your-summary}
+
+```
+
+**YOUR EVALUATION HERE.**
+
+## Restructuring Information
+
+Text models can do more than summarize; they can restructure information to make it more useful. One of `ellmer`'s best features is **structured data extraction** -- you can define the exact shape of the data you want and the LLM will return it as an R data frame.
+
+We'll take a document describing sanctions of Maryland attorneys (the `sanctionsfy25.txt` file in this repository) and ask the LLM to turn unstructured text into structured data:
+
+```{r structured-extraction}
+library(ellmer)
+
+sanctions_text <- readLines("sanctionsfy25.txt") |> paste(collapse = "\n")
+
+chat <- chat_groq(model = "meta-llama/llama-4-scout-17b-16e-instruct")
+
+sanction_type <- type_object(
+  name = type_string("The name of the attorney"),
+  sanction = type_string("The type of sanction"),
+  date = type_string("The date of the sanction in yyyy-mm-dd format"),
+  description = type_string("A brief description of the sanction")
+)
+
+result <- chat$chat_structured(
+  paste("Extract attorney sanctions from this text:\n\n", sanctions_text),
+  type = type_array(sanction_type)
+)
+
+print(result)
+```
+
+Notice that `result` is a data frame you can work with in R -- filter, sort, export to CSV, whatever you need.
+
+Now it's your turn: find a short (3 pages or less) news story that contains unstructured text, save it as a text file and drop it into the list of files on the left side. Then write code that turns some elements of it into structured data using `chat_structured()`. Put your code below, and below that tell me how the LLM did.
+
+```{r your-structured}
+
+```
+
+**PUT YOUR EVALUATION HERE.**
+
+## Named Entity Recognition
+
+Extracting entities (people, organizations, places) from text is a common journalism task. With `ellmer`, you can define exactly what you want to extract:
+
+```{r ner}
+library(ellmer)
+
+article_text <- "Mayor Johnson announced a $5 million infrastructure plan Tuesday
+at City Hall. The proposal, backed by Council Member Rivera and the Department of
+Transportation, aims to repair 200 miles of roads in Prince George's County by 2026.
+The Maryland State Highway Administration will provide matching funds."
+
+chat <- chat_groq(model = "meta-llama/llama-4-scout-17b-16e-instruct")
+
+entity_type <- type_object(
+  name = type_string("The entity name"),
+  type = type_enum(c("person", "organization", "place", "money", "date"), "The entity type"),
+  context = type_string("Brief context for how this entity appears in the text")
+)
+
+entities <- chat$chat_structured(
+  paste("Extract all named entities from this text:\n\n", article_text),
+  type = type_array(entity_type)
+)
+
+print(entities)
+```
+
+Think about a story you've worked on or read recently. What kinds of entities would be useful to extract? How could building a database of entities across many stories help with reporting?
+
+**PUT YOUR ANSWER HERE.**
+
+## Vision Models
+
+We can use models that understand images to extract information from documents, charts and photos. Let's test that using an image from a Maryland physician discipline report. The image `md_doc.png` is already in this repository:
+
+```{r vision}
+library(ellmer)
+
+chat <- chat_google_gemini(model = "gemini-2.5-flash")
+chat$chat(
+  content_image_file("md_doc.png"),
+  "What is the license number from this image?"
+)
+```
+
+You should get something like: "The license number is D25922."
+
+Now it's your turn: find an image *that you would be ok showing to your grandmother* and make sure it's a PNG, GIF or JPG file. Drag it into the codespace so you can see it in your list of files, then change the code below to refer to your image and ask a different question. How did the LLM do?
+
+```{r your-vision}
+library(ellmer)
+
+chat <- chat_google_gemini(model = "gemini-2.5-flash")
+chat$chat(
+  content_image_file("YOUR_FILE"),
+  "YOUR QUESTION"
+)
+```
+
+**PUT YOUR EVALUATION HERE.**
+
+## Conversations
+
+One powerful feature of `ellmer` is that chat objects remember the conversation. You can ask follow-up questions without repeating context:
+
+```{r conversations}
+library(ellmer)
+
+chat <- chat_groq(model = "llama-3.3-70b-versatile")
+chat$chat("What are the main duties of a city council member?")
+chat$chat("How would a journalist investigate whether those duties are being fulfilled?")
+chat$chat("What public records would be most useful for that investigation?")
+```
+
+Each response builds on the previous ones. This is useful when you're exploring a topic or refining a question.
+
+## Batch Processing with tidyllm
+
+Everything we've done so far processes one thing at a time. But what if you have 50 articles to classify, or 200 documents to extract names from? Sending them one by one is slow and expensive. The `tidyllm` package solves this with **batch processing** -- you submit many prompts at once and the LLM provider processes them in the background, often at a 50% discount.
+
+`tidyllm` uses a different style than `ellmer`. Instead of a chat object, you build a pipeline: create a message, pipe it to a provider, extract the reply. Here's a single prompt to see how it works:
+
+```{r tidyllm-basics}
+library(tidyllm)
+
+llm_message("What is the capital of Maryland?") |>
+  chat(groq(.model = "llama-3.3-70b-versatile")) |>
+  get_reply()
+```
+
+The real power is batch processing. Imagine you have a list of article headlines and you want to classify each one by topic:
+
+```{r batch-send}
+library(tidyllm)
+library(tidyverse)
+library(glue)
+
+headlines <- c(
+  "City Council Approves $2M for New Park",
+  "Local Teacher Wins National Science Award",
+  "Terps Basketball Falls to Duke in OT Thriller",
+  "New Bus Routes Planned for Route 1 Corridor",
+  "Restaurant Health Violations Double in Past Year"
+)
+
+prompts <- glue(
+  "Classify this headline into one category: Government, Education, Sports, Transportation, Health.
+   Respond with only the category name.
+   Headline: {headline}",
+  headline = headlines
+)
+
+tasks <- map(prompts, llm_message)
+
+batch_result <- tasks |>
+  send_batch(groq(.model = "llama-3.3-70b-versatile", .temperature = 0))
+
+saveRDS(batch_result, "my_batch.rds")
+```
+
+The batch is now processing in the background. You can check on it and retrieve results:
+
+```{r batch-fetch}
+readRDS("my_batch.rds") |>
+  check_batch(groq())
+
+conversations <- readRDS("my_batch.rds") |>
+  fetch_batch(groq())
+
+categories <- map_chr(conversations, get_reply)
+
+tibble(headline = headlines, category = categories)
+```
+
+This is a game-changer for journalism: you could classify an entire year of city council agendas, extract names from hundreds of campaign finance reports, or categorize thousands of police incident reports -- all in a single batch. Providers like Claude and OpenAI offer batch processing at half the normal price.
+
+Think about a dataset or collection of documents you've encountered in your reporting or coursework. How could batch processing help you analyze it? What would you ask the LLM to extract or classify from each item?
+
+**PUT YOUR ANSWER HERE.**
+
+## How You Could Use AI
+
+Thinking about news archives and journalism, write a few examples of how you might use LLMs to help (beyond writing code). Be specific: don't say that you'll use it to accomplish a larger goal. Instead, say how it could perform or improve specific tasks. I encourage you to think big.
+
+**PUT YOUR ANSWERS HERE.**
+
+## Finishing Up
+
+When you are finished, add, commit and push your work to GitHub and submit the URL of the repository in ELMS.
