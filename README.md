@@ -4,11 +4,11 @@ An introduction to using large language models in R for journalism, using the [e
 
 ## Getting Started
 
-Using the green "Use this template" button on the top right, create a copy of this repository under your GitHub account, giving it the same name. Open that repository in a codespace.
+Using the green "Use this template" button on the top right, create a copy of this repository under your GitHub account, giving it the same name. Clone that repository to your computer and open it in RStudio.
 
 ### Install Packages
 
-In the codespace terminal, run:
+In the RStudio terminal, run:
 
 ```bash
 Rscript setup.R
@@ -20,25 +20,28 @@ This installs `ellmer` and `tidyllm`, two R packages for interacting with differ
 
 We'll use two LLM providers. Both have free tiers.
 
-**Groq** (for text models): Generate an API key at https://console.groq.com/keys. Copy the key, then in the terminal run:
+**Groq** (for text models): Generate an API key at https://console.groq.com/keys.
 
-```bash
-echo 'GROQ_API_KEY=your_key_here' >> ~/.Renviron
+**Google Gemini** (for vision models): Generate an API key at https://aistudio.google.com/apikey.
+
+Once you have both keys, open your `.Renviron` file in RStudio by running:
+
+```r
+usethis::edit_r_environ()
 ```
 
-Replace `your_key_here` with the key you copied.
+Add these two lines, replacing the placeholder values with your actual keys (no quotemarks:
 
-**Google Gemini** (for vision models): Generate an API key at https://aistudio.google.com/apikey. Copy the key, then run:
-
-```bash
-echo 'GOOGLE_API_KEY=your_key_here' >> ~/.Renviron
+```
+GROQ_API_KEY=your_key_here
+GOOGLE_API_KEY=your_key_here
 ```
 
-After adding both keys, restart R (type `q()` then start R again, or restart the codespace) so the keys take effect.
+Save the file, then restart R (Session menu in RStudio) so the keys take effect.
 
 ### Verify Setup
 
-Open R in the terminal (type `R`) and run:
+In the console, do this:
 
 ```r
 library(ellmer)
@@ -50,4 +53,4 @@ You should see a list of creative turtle names. If you get an error about the AP
 
 ## Exercises
 
-Open `exercises.Rmd` and work through the tutorial. Run each code chunk, fill in your answers, then commit and push your work when finished.
+Open `exercises.Rmd` and work through the tutorial.
