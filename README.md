@@ -24,7 +24,7 @@ We'll use two LLM providers. Both have free tiers.
 
 **Google Gemini** (for vision models): Generate an API key at https://aistudio.google.com/apikey.
 
-Once you have both keys, open your `.Renviron` file in RStudio by running:
+Once you have both keys, open your `.Renviron` file in RStudio by running this in the console:
 
 ```r
 usethis::edit_r_environ()

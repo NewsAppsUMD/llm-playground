@@ -28,7 +28,7 @@ chat <- chat_groq(model = "meta-llama/llama-4-scout-17b-16e-instruct")
 chat$chat(paste("Summarize this story in 3 paragraphs:\n\n", story_text))
 ```
 
-Run this and read the output — you just summarized a data-driven accountability story with four lines of code. Now imagine doing this for 300 stories at once.
+Run this and read the output — you just summarized a data-driven accountability story with four lines of code. Now imagine doing this for 300 stories at once, or 300 PDFs.
 
 ## Restructuring Information
 
