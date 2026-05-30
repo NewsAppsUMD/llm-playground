@@ -14,7 +14,7 @@ By the end of these exercises, you'll have turned those unstructured text files 
 
 ## Text Models
 
-The `ellmer` package lets us have conversations with LLMs, ask them to summarize text, and extract structured data. Here's how to fetch a published story and summarize it in a few lines of code:
+The `ellmer` package lets us have conversations with LLMs, ask them to summarize text and extract structured data. Here's how to fetch a published story and summarize it in a few lines of code:
 
 ```{r summarize-article}
 library(ellmer)
@@ -28,7 +28,7 @@ chat <- chat_groq(model = "meta-llama/llama-4-scout-17b-16e-instruct")
 chat$chat(paste("Summarize this story in 3 paragraphs:\n\n", story_text))
 ```
 
-Run this and read the output — you just summarized a data-driven accountability story with four lines of code. Now imagine doing this for 300 stories at once, or 300 PDFs.
+Run this and read the output. You just summarized a story with four lines of code. Now imagine doing this for 300 stories at once, or 300 PDFs.
 
 ## Restructuring Information
 
@@ -57,7 +57,11 @@ print(result)
 
 Notice that `result` is a data frame you can work with in R -- filter, sort, export to CSV, whatever you need.
 
-Now it's your turn: process `sanctionsfy26.txt` the same way. Use the code above as a starting point. How many sanctions are in FY2026? Are there patterns in sanction types or misconduct descriptions compared to FY2025?
+But how good is it? Open `sanctionsfy25.txt` and spot-check the results. Count the sanctions in the original text and compare that to `nrow(result)`. Pick two or three rows and verify the name, date, and sanction type against the source. Did the LLM miss any entries? Did it hallucinate any that aren't in the document? Did it get any dates wrong?
+
+**Discussion: How many sanctions are in the original text vs. the data frame? Which fields were most accurate — names, dates, sanction types, or descriptions? What kind of errors did you find, and how would you catch them at scale?**
+
+Now it's your turn: process `sanctionsfy26.txt` the same way (or change something!). Use the code above as a starting point, and do the same validation — check the count and spot-check a few rows against the source text.
 
 ```{r your-structured}
 
@@ -77,7 +81,7 @@ result_fy26 <- fromJSON(response_fy26)
 print(result_fy26)
 ```
 
-**How does FY2026 compare to FY2025? What patterns do you see, and what questions would you pursue if reporting this story?**
+**Discussion: Look at both data frames. What's the most surprising difference between the two years? If an editor asked you to pitch a story from this data, what would you say?**
 
 ## Named Entity Recognition
 
@@ -106,9 +110,7 @@ entities <- fromJSON(response)
 print(entities)
 ```
 
-Look at the entities that were extracted. Are there entity types that `type_enum` doesn't currently capture but would be useful for a sanctions investigation — for example, specific laws cited, court names, or dollar amounts? How would you modify the schema to capture those?
-
-**PUT YOUR ANSWER HERE.**
+**Discussion: The LLM extracted entities using categories we defined. What did it miss or get wrong? What categories would you add if you were building a database to track attorney misconduct over time?**
 
 ## Vision Models
 
@@ -137,7 +139,7 @@ chat$chat(
 )
 ```
 
-**PUT YOUR EVALUATION HERE.**
+**Discussion: What did the LLM get right about your image? What did it get wrong or miss? Would you trust this output enough to use it in a story without checking?**
 
 ## Conversations
 
@@ -157,9 +159,11 @@ chat$chat("What additional records or sources would you seek out to report this 
 
 Each response builds on the previous ones — the LLM retains context across all three questions without you having to repeat the sanctions list each time.
 
+You don't want to use this technique to _replace_ reporting and your own judgment. You should think of AI as your assistant: it tries to be helpful but sometimes doesn't know what it's talking about and doesn't always know what you know.
+
 ## Batch Processing with tidyllm
 
-Everything we've done so far processes one thing at a time. But what if you have 50 articles to classify, or 200 documents to extract names from? Sending them one by one is slow and expensive. The `tidyllm` package solves this with **batch processing** -- you submit many prompts at once and the LLM provider processes them in the background, often at a 50% discount.
+Everything we've done so far processes one thing at a time. But what if you have 50 articles to classify, or 200 documents to extract names from? Sending them one by one can be slow and expensive. The `tidyllm` package solves this with **batch processing** -- you submit many prompts at once and the LLM provider processes them in the background, often at a 50% discount.
 
 `tidyllm` uses a different style than `ellmer`. Instead of a chat object, you build a pipeline: create a message, pipe it to a provider, extract the reply. Here's a single prompt to see how it works:
 
@@ -209,9 +213,7 @@ tibble(name = result$name, sanction = result$sanction, misconduct_category = cat
 
 This is a game-changer for journalism: you could classify an entire year of city council agendas, extract names from hundreds of campaign finance reports, or categorize thousands of police incident reports -- all in a single batch. Providers like Claude and OpenAI offer batch processing at half the normal price.
 
-Look at the output table. Do the categories make sense? Are there cases where you'd push back on the LLM's classification? Now think bigger: you could run this same classification across *both* fiscal years, or on a decade of sanctions records. What patterns across hundreds of cases would make for a compelling story?
-
-**PUT YOUR ANSWER HERE.**
+**Discussion: Did the LLM miscategorize any of the sanctions? Pick one you'd classify differently and explain why. What does that tell you about relying on automated classification for a published story?**
 
 ## Putting It Together
 
@@ -247,15 +249,11 @@ all_sanctions |>
   pivot_wider(names_from = fiscal_year, values_from = n, values_fill = 0)
 ```
 
-What changed between the two years? Are disbarments up or down? More reprimands? Based on this table, what would the lede of a story be?
-
-**PUT YOUR ANSWER HERE.**
+**Discussion: Before you write anything, validate: does the total number of sanctions per year in `all_sanctions` match what you counted in the original text files? If not, what went wrong — and would a reader ever know? Now write one lede sentence that captures the most newsworthy change, and say who you'd call first to report it out.**
 
 ## How You Could Use AI
 
-Thinking about news archives and journalism, write a few examples of how you might use LLMs to help (beyond writing code). Be specific: don't say that you'll use it to accomplish a larger goal. Instead, say how it could perform or improve specific tasks. I encourage you to think big.
-
-**PUT YOUR ANSWERS HERE.**
+**Discussion: Pick a beat or topic you cover (or want to cover). Describe one specific task — not a goal, a task — where these tools would change how you report. What would you feed in, and what would you get out?**
 
 ## Where This Is Heading
 
