@@ -10,7 +10,7 @@ knitr::opts_chunk$set(eval = FALSE)
 
 Throughout these exercises, you are investigating attorney discipline in Maryland. The Maryland Office of Bar Counsel maintains public records of [sanctions](https://www.courts.state.md.us/attygrievance/sanctions) against attorneys — disbarments, suspensions and reprimands. Two years of that data (`sanctionsfy25.txt` and `sanctionsfy26.txt`) are already in this repository.
 
-By the end of these exercises, you'll have turned those unstructured text files into a structured, analyzable dataset and started asking real reporting questions — using LLMs to do in minutes what would otherwise take hours by hand.
+By the end of these exercises, you'll have turned those unstructured text files into a structured, analyzable dataset and can start asking reporting questions — using LLMs to do in minutes what would otherwise take hours by hand.
 
 ## Text Models
 
@@ -28,7 +28,7 @@ chat <- chat_groq(model = "meta-llama/llama-4-scout-17b-16e-instruct")
 chat$chat(paste("Summarize this story in 3 paragraphs:\n\n", story_text))
 ```
 
-Run this and read the output. You just summarized a story with four lines of code. Now imagine doing this for 300 stories at once, or 300 PDFs.
+Run this and read the output. Now imagine doing this for 300 stories at once, or 300 PDFs.
 
 ## Restructuring Information
 
