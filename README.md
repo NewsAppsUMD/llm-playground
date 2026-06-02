@@ -22,7 +22,7 @@ We'll use two LLM providers. Both have free tiers.
 
 **Groq** (for text models): Generate an API key at https://console.groq.com/keys.
 
-**Google Gemini** (for vision models): Generate an API key at https://aistudio.google.com/apikey.
+**Google Gemini** (for vision models): Get the API key from here: https://www.yellkey.com/wonder
 
 Once you have both keys, open your `.Renviron` file in RStudio by running this in the console:
 
