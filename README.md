@@ -16,6 +16,30 @@ Rscript setup.R
 
 This installs `ellmer` and `tidyllm`, two R packages for interacting with different LLMs, along with some helper packages. We use `ellmer` for interactive chat and structured data extraction, and `tidyllm` for batch processing many prompts at once.
 
+**if you get this error**: 
+
+```
+Error in contrib.url(repos, "source") : 
+  trying to use CRAN without setting a mirror
+Calls: install.packages -> contrib.url
+```
+
+Do these steps:
+
+1. In the console, type `file.edit("~/.Rprofile")`
+2. In the file, add these lines:
+
+```
+# Add this line to ~/.Rprofile so it applies every session
+options(repos = c(CRAN = "https://cran.r-project.org"))
+```
+
+3. Save the file and restart R: Session -> Restart R.
+4. Run the Rscript command again.
+
+
+
+
 ### API Keys
 
 We'll use two LLM providers. Both have free tiers.
